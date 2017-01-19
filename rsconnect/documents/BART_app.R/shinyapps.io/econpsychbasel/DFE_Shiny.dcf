@@ -1,0 +1,11 @@
+name: DFE_Shiny
+title: DFE_Shiny
+account: econpsychbasel
+server: shinyapps.io
+appId: 151538
+bundleId: 682122
+url: https://econpsychbasel.shinyapps.io/DFE_Shiny/
+when: 1484666463.88302
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: .httr-oauth|.Rapp.history|.RData|Bandit_app.R|EP_droptoken.rds|helper.R|www/banditss.png

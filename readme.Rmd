@@ -1,0 +1,67 @@
+---
+title: "Shiny Bandit"
+author: "Nathaniel Phillips"
+date: "18 January 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Task Description
+
+This app runs a standard (3-armed) bandit task. The bandit task is a prototypical example of a *reinforcement learning* task, where decision makers need to maximize their resources by strategically interacting with an uncertain environment.
+
+In the task, players are presented with options (in this case, 3) represented as boxes. The boxes contain many tickets. Each ticket has a point value written on it ranging from -100 to +100. Tickets with high positive values are valuable and result in points, while tickets with low negative values are to be avoided as they remove points.
+
+Each box has its own distribution of tickets. However, players do not know for sure what the distribution of ticket values is in each box. Some boxes may have higher ticket values on average than others, and some may have more variable ticket values than others.
+
+Players have a fixed (e.g.; 50) number of trials where they can select a box and draw a random ticket. When a ticket is drawn, the point value on the ticket is displayed and its value is added (or subtracted) to the player's cumulative point total. The ticket is then returned to the box. 
+When the final trial is completed, the game is over.
+
+Players play the game several times. The distributions (boxes) are the same in each game. However, their location is randomly determined at the start of each game. Therefore, while players can learn about the overall decision environment from one game to another, they will always have to learn which option is which in each game.
+
+# Using the Application
+
+## Game parameters
+
+Here is a list of the major game parameters you can change.
+
+| Parameter| Class| Description
+|------:|---------- | ---------------------------------------:|
+|     `distributions`| matrix |  Population distributions of outcomes for options. Each columnn is an option.|
+|     `trials.max`| integer |   Maximum number of trials in each game|
+|     `games.n` |   integer | Number of games to be played|
+|     `randomize.locations`| logical |    Should the locations of options be randomized each game?|
+
+Option distributions are defined in the `distributions` matrix. The matrix can have in
+
+## Changing the number of options
+
+By default, the game has 3 options. To change the number of options, you must make two changes:
+
+1. Make sure the number of columns in the `distributions` matrix is equal to the number of options you want.
+2. Change the `actionButtons` contained in the game page. For example, for a game with 2 options, include only two buttons (e.g.; `selectA` and `selectB`). For a game with 5 options, include buttons for all 5 options.
+3. In section `4A`, 
+
+## Uploading data to Dropbox
+
+In order to upload data to Dropbox, you must include a file called `droptoken.rds` containing your dropbox authentication token. This file must be in the same folder as the main application file `ShinyBanditMulti_app.R`. You can create this file by running the following:
+
+```{r eval = FALSE}
+install.packages("rdrop2")                 # install rdrop2 packagre
+droptoken <- rdrop2::drop_auth()           # Will open a browser and ask you to login
+saveRDS(droptoken, file = "droptoken.rds") # Save token as droptoken.rds
+```
+
+You can specify the folder to save your data in with the `outputDir` object (This object will later on be passed to the `rdrop2::drop_upload()` function when it is time to actually save the data). For example, `outputDir <- "ShinyApp/data"` will save the data to a data folder contained in a ShinyApp folder. 
+
+## Emailing data
+
+
+
+## Notes
+
+- Currently, the code is restricted to a bandit task with 3 options (aka, a 3-armed bandit). However, it can be easily adapted to account for fewer or more options.
