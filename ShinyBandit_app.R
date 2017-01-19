@@ -256,7 +256,7 @@ server <- function(input, output, session) {
                      choices = list("Male" = 1, 
                                     "Female" = 2, 
                                     "Other" = 3),
-                     selected = 1),
+                     selected = 99),
         
         numericInput("age", 
                      label = "What is your age?",
@@ -269,7 +269,7 @@ server <- function(input, output, session) {
                                  "3" = 3,
                                  "4" = 4,
                                  "5 - Very Much" = 5), 
-                     selected = 1),
+                     selected = 99),
         
         textAreaInput(inputId = "strategy",
                       label = "What was your strategy in the Boxes Game?",
@@ -281,14 +281,14 @@ server <- function(input, output, session) {
                      label = "Is there any reason why we should NOT use your data for scientific research? For example, were you not paying attention or were you intoxicated?",
                      choices = c("No. My data should be valid for scientific research" =  "0",
                                  "Yes. There is a good reason why you should NOT use my data for scientific research" = 1), 
-                     selected = 1),
+                     selected = 99),
         
         radioButtons("playedbefore",
                      label = "Have you played a game similar to the Boxes game in the past?",
                      choices = c("No. I have not played a game similar to the Boxes game in the past" = 0,
                                  "Yes. I have played a game very similar to the Boes game in the past" = 1,
                                  "I am not sure" = 2), 
-                     selected = 1),
+                     selected = 99),
         
         textAreaInput("comments",
                       label = "If you have any additional comments, please enter them below",
@@ -542,15 +542,21 @@ server <- function(input, output, session) {
       GameDatafileName <- paste0(input$workerid, as.integer(Sys.time()), digest::digest(GameData.i), "_g.csv")
       
       # Write Survey data
-
+      if(length(input$workerid) == 0) {workerid.i <- NA} else {workerid.i <- input$workerid}
+      if(length(input$comments) == 0) {comments.i <- NA} else {comments.i <- input$comments}
+      if(length(input$age) == 0) {age.i <- NA} else {age.i <- input$age}
+      if(length(input$sex) == 0) {sex.i <- NA} else {sex.i <- input$sex}
+      if(length(input$dontuse) == 0) {dontuse.i <- NA} else {dontuse.i <- input$dontuse}
+      if(length(input$interesting) == 0) {interesting.i <- NA} else {interesting.i <- input$interesting}
+      if(length(input$playedbefore) == 0) {playedbefore.i <- NA} else {playedbefore.i <- input$playedbefore}
       
-      SurveyData.i <- data.frame("workerid" = input$workerid,
-                                 "age" = input$age,
-                                 "sex" = input$sex,
-                                "comments" = input$comments,
-                                "dontuse" = input$dontuse,
-                                "interesting" = input$interesting,
-                                "playedbefore" = input$playedbefore,
+      SurveyData.i <- data.frame("workerid" = workerid.i,
+                                 "age" = age.i,
+                                 "sex" = sex.i,
+                                "comments" = comments.i,
+                                "dontuse" = dontuse.i,
+                                "interesting" = interesting.i,
+                                "playedbefore" = playedbefore.i,
                                  "option.order" = paste(locations.r, collapse = ";"),
                                  "completion.code" = completion.code)
       
