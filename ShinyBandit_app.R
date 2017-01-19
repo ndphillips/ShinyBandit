@@ -45,7 +45,7 @@ distributions <- round(
         rnorm(n = 1e5, mean = 5, sd = 10),
         rnorm(n = 1e5, mean = -2, sd = 10)), 0)
 
-trials.n <- 10                          # Trials per game
+trials.n <- 5                          # Trials per game
 practice.n <- 10                        # Trials in practice game
 games.n <- 1                            # Number of games
 randomize.locations <- TRUE             # Should the location of options be randomized?
@@ -121,7 +121,6 @@ server <- function(input, output, session) {
   output$MainAction <- renderUI( {
     PageLayouts()
   })  
-  
   # --------------------------------
   # Section C: Define Reactive Values
   #   These store the main values in the game
@@ -254,12 +253,14 @@ server <- function(input, output, session) {
         
         radioButtons("sex",
                      label = "What is your sex?",
-                     choices = list("Male" = 1, "Female" = 2, "Other" = 3),
-                     selected = character(0)),
+                     choices = list("Male" = 1, 
+                                    "Female" = 2, 
+                                    "Other" = 3),
+                     selected = 1),
         
         numericInput("age", 
                      label = "What is your age?",
-                     value = 0),
+                     value = NA),
         
         radioButtons("interesting", 
                      label = "How interesting did you find the Boxes Game?",
@@ -268,28 +269,31 @@ server <- function(input, output, session) {
                                  "3" = 3,
                                  "4" = 4,
                                  "5 - Very Much" = 5), 
-                     selected = character(0)),
+                     selected = 1),
         
         textAreaInput(inputId = "strategy",
                       label = "What was your strategy in the Boxes Game?",
-                      placeholder = "I tried to...", resize = "both"),
+                      placeholder = "I tried to...", 
+                      resize = "both",
+                      value = ""),
         
         radioButtons("dontuse",
                      label = "Is there any reason why we should NOT use your data for scientific research? For example, were you not paying attention or were you intoxicated?",
                      choices = c("No. My data should be valid for scientific research" =  "0",
-                                 "Yes. There is a good reason why you should NOT use my data for scientific research" = 1
-                     ), selected = character(0)),
+                                 "Yes. There is a good reason why you should NOT use my data for scientific research" = 1), 
+                     selected = 1),
         
         radioButtons("playedbefore",
                      label = "Have you played a game similar to the Boxes game in the past?",
                      choices = c("No. I have not played a game similar to the Boxes game in the past" = 0,
                                  "Yes. I have played a game very similar to the Boes game in the past" = 1,
-                                 "I am not sure" = 2
-                     ), selected = character(0)),
+                                 "I am not sure" = 2), 
+                     selected = 1),
         
         textAreaInput("comments",
                       label = "If you have any additional comments, please enter them below",
-                      resize = "both"),
+                      resize = "both", 
+                      value = ""),
         
         actionButton(inputId = "gt_goodbye",
                      label = "Save Data and End Study"))
@@ -434,7 +438,6 @@ server <- function(input, output, session) {
            ytop = box.center.y[selection] + box.height * .4,
            col = "white"
       )
-      
       # Outcome Display
       text(x = box.center.x[selection], y = .5, 
            current.outcome.disp, cex = 7, col = text.col)
@@ -539,14 +542,22 @@ server <- function(input, output, session) {
       GameDatafileName <- paste0(input$workerid, as.integer(Sys.time()), digest::digest(GameData.i), "_g.csv")
       
       # Write Survey data
+
+      
       SurveyData.i <- data.frame("workerid" = input$workerid,
                                  "age" = input$age,
                                  "sex" = input$sex,
-                                 "comments" = input$comments,
+                                "comments" = input$comments,
+                                "dontuse" = input$dontuse,
+                                "interesting" = input$interesting,
+                                "playedbefore" = input$playedbefore,
                                  "option.order" = paste(locations.r, collapse = ";"),
                                  "completion.code" = completion.code)
       
-      SurveyDatafileName <- paste0(input$workerid, as.integer(Sys.time()), digest::digest(SurveyData.i), "_s.csv")
+
+      SurveyDatafileName <- paste0(input$workerid,
+                                   as.integer(Sys.time()),
+                                   digest::digest(SurveyData.i), "_s.csv")
       
       incProgress(.5)
       
