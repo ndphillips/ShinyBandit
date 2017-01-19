@@ -1,6 +1,7 @@
 .Rproj.user
 .Rhistory
 .RData
+ShinyBandit.Rproj
 .Ruserdata
 droptoken.rds
 rsconnect
