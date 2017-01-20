@@ -36,7 +36,7 @@ Here are some examples of ShinyBandit you can play right now!
 The game is stored in the `ShinyBandit_app.R` file. The app is separated into several sections:
 
 | Section|  Description
-|:--------------|:------------------------------------------- | 
+|:-----------------|:------------------------------------- | 
 | 0: Load Libraries| Load all libraries necessary to run the application. Be sure to include `shiny` for all Shiny functions, `rdrop2` for Dropbox integration, and `sendmailR` for sending data as emails.|
 | A: Setup the game| Define game parameters (A1), define how data will be saved (A2), and do miscellaneous data formatting (A3) and object creation (A4)|
 | B: Overall Layout | Define the app title and add custom CSS tags.|
