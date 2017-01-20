@@ -126,7 +126,7 @@ $(document).ready(function () {
 
 <div id="task-description" class="section level2">
 <h2>Task Description</h2>
-<p>This app runs a standard (3-armed) bandit task. The bandit task is a prototypical example of a <em>reinforcement learning</em> task, where decision makers need to maximize their resources by strategically interacting with an uncertain environment.</p>
+<p>This app runs a standard (3-armed) bandit task. The bandit task is a prototypical example of a <em>reinforcement learning</em> task, where decision makers need to maximize their resources by strategically interacting with an uncertain environment <span class="citation">(Sutton and Barto 1998)</span>.</p>
 <p>In the task, players are presented with options (in this case, 3) represented as boxes. The boxes contain many tickets. Each ticket has a point value written on it ranging from -100 to +100. Tickets with high positive values are valuable and result in points, while tickets with low negative values are to be avoided as they remove points.</p>
 <p>Each box has its own distribution of tickets. However, players do not know for sure what the distribution of ticket values is in each box. Some boxes may have higher ticket values on average than others, and some may have more variable ticket values than others.</p>
 <p>Players have a fixed (e.g.; 50) number of trials where they can select a box and draw a random ticket. When a ticket is drawn, the point value on the ticket is displayed and its value is added (or subtracted) to the player’s cumulative point total. The ticket is then returned to the box. When the final trial is completed, the game is over.</p>
@@ -241,7 +241,6 @@ $(document).ready(function () {
 </tr>
 </tbody>
 </table>
-<p>Option distributions are defined in the <code>distributions</code> matrix. The matrix can have in</p>
 </div>
 <div id="changing-the-number-of-options" class="section level2">
 <h2>Changing the number of options</h2>
@@ -256,20 +255,28 @@ $(document).ready(function () {
 <div id="saving-data" class="section level1">
 <h1>Saving Data</h1>
 <p>I know of two methods to save data from the experiment: uploading directly to Dropbox, and email.</p>
-<div id="uploading-data-to-dropbox" class="section level2">
-<h2>Uploading data to Dropbox</h2>
+<div id="uploading-data-to-dropbox" class="section level3">
+<h3>Uploading data to Dropbox</h3>
 <p>In order to upload data to Dropbox, you must include a file called <code>droptoken.rds</code> containing your dropbox authentication token. This file must be in the same folder as the main application file <code>ShinyBanditMulti_app.R</code>. You can create this file by running the following:</p>
-<pre class="r"><code>install.packages(&quot;rdrop2&quot;)                 # install rdrop2 packagre
+<pre class="r"><code>install.packages(&quot;rdrop2&quot;)                 # install rdrop2 package
 droptoken &lt;- rdrop2::drop_auth()           # Will open a browser and ask you to login
 saveRDS(droptoken, file = &quot;droptoken.rds&quot;) # Save token as droptoken.rds</code></pre>
 <p>You can specify the folder to save your data in with the <code>outputDir</code> object (This object will later on be passed to the <code>rdrop2::drop_upload()</code> function when it is time to actually save the data). For example, <code>outputDir &lt;- &quot;ShinyApp/data&quot;</code> will save the data to a data folder contained in a ShinyApp folder.</p>
 </div>
-<div id="emailing-data" class="section level2">
-<h2>Emailing data</h2>
-<p>Still working on this…</p>
+<div id="emailing-data" class="section level3">
+<h3>Emailing data</h3>
+<p>You can have the server automatically email data to you as an attachment using the <code>sendmailR</code> package. I’m still working on getting this to work…</p>
 </div>
 <div id="notes" class="section level2">
 <h2>Notes</h2>
+</div>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1>References</h1>
+<div id="refs" class="references">
+<div id="ref-sutton1998reinforcement">
+<p>Sutton, Richard S, and Andrew G Barto. 1998. <em>Reinforcement Learning: An Introduction</em>. Vol. 1. 1. MIT press Cambridge.</p>
+</div>
 </div>
 </div>
 

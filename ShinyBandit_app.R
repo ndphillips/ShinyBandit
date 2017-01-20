@@ -1,6 +1,7 @@
 # ------------------
 #  BANDIT TASK
 #  Implimented in Shiny as ShinyBandit by Nathaniel D. Phillips
+# 
 #  http://ndphillips.github.io, Nathaniel.D.Phillips.is@gmail.com
 #
 #   CODE SECTIONS
@@ -21,6 +22,7 @@
 #     F1: Option selection buttons
 #     F2: Page navigation buttons
 #     F3: Event tracking
+#   G: Save data
 # ------------------
 
 
@@ -33,6 +35,7 @@ library(shiny)
 library(rdrop2)
 library(sendmailR)
 library(digest)
+library(yarrr)
 
 # --------------------------
 # Section A: Setup game
@@ -45,7 +48,7 @@ distributions <- round(
         rnorm(n = 1e5, mean = 2.5, sd = 5),
         rnorm(n = 1e5, mean = -1, sd = 8)), 0)
 
-trials.n <- 50                         # Trials per game
+trials.n <- 25                          # Trials per game
 practice.n <- 10                        # Trials in practice game
 games.n <- 3                            # Number of games
 randomize.locations <- TRUE             # Should the location of options be randomized?
@@ -111,7 +114,7 @@ completion.code <- paste("EP-BANDIT", sample(100:999, size = 1),
 
 ui <- fixedPage(
   
-  title = "The Boxes Game",
+  title = "ShinyBandit",
   uiOutput("MainAction"),
   tags$style(type = "text/css", ".recalculating {opacity: 1.0;}")   # Prevents gray screen during Sys.sleep()
   
@@ -206,6 +209,7 @@ server <- function(input, output, session) {
       return(
         list(
           h2(paste("Game", CurrentValues$game, "of", games.n)),
+          p("Reminder: The boxes are the same in each game. However, the location of each box (that is, which box is A, B, or C) will randomly determined at the start of each game."),
           p("Click continue to start the next game"),
           actionButton(inputId = "gt_game", 
                        label = paste("Start Game", CurrentValues$game)) 
@@ -311,7 +315,8 @@ server <- function(input, output, session) {
         p("Here is your study completion code. Please write it down as a confirmation of your participation"),
         h2(completion.code),
         h3("What was this research about?"),
-        p("The purpose of this research is to try and understand how people learn and make decisions about risky options."),
+        p("The purpose of this research is to try and understand how people learn and make decisions about risky options. In this task, we're interested in how well you learn to select the best options over time. In the plot below, you can see how many points you actually earned in the game(s) over time."),
+        plotOutput('EarningsPlot'),
         p("If you have any questions about this study, you may contact us at EconPsychBasel@gmail.com. If you do contact us, please include your study completion code."),
         p("Once you have recorded your code, you may close this window"),
         tags$img(src = "thankyou.jpg", width = "300px")
@@ -481,181 +486,202 @@ server <- function(input, output, session) {
     if(trial.i <= trials.n) {
       
       outcome.i <- outcomes.ls[[game.i]][trial.i, selection.i]
+      time.i <- proc.time()[3]
       
       # Update current values
       CurrentValues$selection <<- selection.i
       CurrentValues$outcome <<- outcome.i   
       CurrentValues$points.cum <<- CurrentValues$points.cum + outcome.i
-      CurrentValues$time <<- proc.time()[3]
+      CurrentValues$time <<- time.i
       CurrentValues$game <<- game.i
       
       
       # Update GameData
-      GameData$selection <<- c(GameData$selection, CurrentValues$selection)
-      GameData$trial <<- c(GameData$trial, CurrentValues$trial)
+      GameData$game <<- c(GameData$game, game.i)
+      GameData$trial <<- c(GameData$trial, trial.i)
+      GameData$time <<- c(GameData$time, time.i)
+      GameData$selection <<- c(GameData$selection, selection.i)
       GameData$outcome <<- c(GameData$outcome, outcome.i)
-      GameData$points.cum <<- GameData$points.cum + outcome.i
-      GameData$time <<- c(GameData$time, CurrentValues$time)
-      GameData$game <<- c(GameData$game, CurrentValues$game.i)
+      GameData$points.cum <<- c(GameData$points.cum, CurrentValues$points.cum)
       
     }
     
     CurrentValues$trial <<- CurrentValues$trial + 1
   }
   
-  observeEvent(input$SelectA, {selection.update(1, CurrentValues$trial, CurrentValues$game)})
-  observeEvent(input$SelectB, {selection.update(2, CurrentValues$trial, CurrentValues$game)})
-  observeEvent(input$SelectC, {selection.update(3, CurrentValues$trial, CurrentValues$game)})
+observeEvent(input$SelectA, {selection.update(1, CurrentValues$trial, CurrentValues$game)})
+observeEvent(input$SelectB, {selection.update(2, CurrentValues$trial, CurrentValues$game)})
+observeEvent(input$SelectC, {selection.update(3, CurrentValues$trial, CurrentValues$game)})
+
+# Section F2: Page Navigation Buttons
+observeEvent(input$gt_instructions, {CurrentValues$page <- "instructions"})
+observeEvent(input$gt_gameend, {CurrentValues$page <- "gameend"})
+observeEvent(input$gt_game, {CurrentValues$page <- "game"})
+observeEvent(input$gt_postsurvey, {CurrentValues$page <- "postsurvey"})
+observeEvent(input$gt_goodbye, {CurrentValues$page <- "goodbye"})
+observeEvent(input$gt_startnextgame, {CurrentValues$page <- "startnextgame"})
+observeEvent(input$gameend, {
   
-  # Section F2: Page Navigation Buttons
-  observeEvent(input$gt_instructions, {CurrentValues$page <- "instructions"})
-  observeEvent(input$gt_startnextgame, {
+  if(CurrentValues$game != games.n) {
     
-    # Increase game number by 1
     CurrentValues$game <- CurrentValues$game + 1
-    
-    # Set CurrentValues to defaults for start of next game
     CurrentValues$trial <- 1
     CurrentValues$selection <- 0
     CurrentValues$points.cum <- 0
-    
-    # Go to startnextgame page
     CurrentValues$page <- "startnextgame"
     
+  } else {
     
-  })
-  observeEvent(input$gt_gameend, {CurrentValues$page <- "gameend"})
-  observeEvent(input$gt_game, {CurrentValues$page <- "game"})
-  observeEvent(input$gt_postsurvey, {CurrentValues$page <- "postsurvey"})
-  observeEvent(input$gt_goodbye, {
-    
-    # Create progress message   
-    withProgress(message = "Saving data...", value = 0, {
-      
-      incProgress(.25)
-      
-      response.time.v <- c(NA, round(GameData$time[2:(trials.n)] - GameData$time[1:(trials.n - 1)], 4))
-      
-      # Write GameData to a dataframe
-      GameData.i <- data.frame("trial" = GameData$trial,
-                               "time" = response.time.v,
-                               "selection" = GameData$selection, 
-                               "outcome" = GameData$outcome)
-      
-      GameDatafileName <- paste0(input$workerid, as.integer(Sys.time()), digest::digest(GameData.i), "_g.csv")
-      
-      # Write Survey data
-      if(length(input$workerid) == 0) {workerid.i <- NA} else {workerid.i <- input$workerid}
-      if(length(input$comments) == 0) {comments.i <- NA} else {comments.i <- input$comments}
-      if(length(input$age) == 0) {age.i <- NA} else {age.i <- input$age}
-      if(length(input$sex) == 0) {sex.i <- NA} else {sex.i <- input$sex}
-      if(length(input$dontuse) == 0) {dontuse.i <- NA} else {dontuse.i <- input$dontuse}
-      if(length(input$interesting) == 0) {interesting.i <- NA} else {interesting.i <- input$interesting}
-      if(length(input$playedbefore) == 0) {playedbefore.i <- NA} else {playedbefore.i <- input$playedbefore}
-      
-      SurveyData.i <- data.frame("workerid" = workerid.i,
-                                 "age" = age.i,
-                                 "sex" = sex.i,
-                                "comments" = comments.i,
-                                "dontuse" = dontuse.i,
-                                "interesting" = interesting.i,
-                                "playedbefore" = playedbefore.i,
-                                 "option.order" = paste(locations.r, collapse = ";"),
-                                 "completion.code" = completion.code)
-      
+    CurrentValues$page <- "allgameend"}
+  
+})
 
-      SurveyDatafileName <- paste0(input$workerid,
-                                   as.integer(Sys.time()),
-                                   digest::digest(SurveyData.i), "_s.csv")
-      
-      incProgress(.5)
-      
-      
-      if(saveDataLocation == "dropbox") {
-        
-        GameDatafilePath <- file.path(tempdir(), GameDatafileName)
-        write.csv(GameData.i, GameDatafilePath, row.names = FALSE, quote = TRUE)
-        rdrop2::drop_upload(GameDatafilePath, dest = outputDir, dtoken = droptoken)
-        
-        SurveyDatafilePath <- file.path(tempdir(), SurveyDatafileName)
-        write.csv(SurveyData.i, SurveyDatafilePath, row.names = FALSE, quote = TRUE)
-        rdrop2::drop_upload(SurveyDatafilePath, dest = outputDir, dtoken = droptoken)
-        
-      }
-      
-      # if(saveDataLocation == "email") {
-      #   
-      #   GameDatafilePath <- file.path(tempdir(), GameDatafileName)
-      #   write.csv(GameData.i, GameDatafilePath, row.names = FALSE, quote = TRUE)
-      # 
-      #   SurveyDatafilePath <- file.path(tempdir(), SurveyDatafileName)
-      #   write.csv(SurveyData.i, SurveyDatafilePath, row.names = FALSE, quote = TRUE)
-      # 
-      #   attachmentObject <- mime_part(x = "GameDatafilePath", name = GameDatafileName)
-      #   attachmentObject2 <- mime_part(x = "SurveyDatafilePath", name = SurveyDatafileName)
-      #   bodyWithAttachment <- list(body, attachmentObject, attachmentObject2)
-      #   
-      #   sendmail(from = from, to = to, subject = subject, msg = bodyWithAttachment, control = mailControl)
-      #   
-      # }
-      
-      
-      # Write survey data 
-      
-      
-      incProgress(.75)
-      
-      # Some interesting plots (not necessary)
-      
-      output$GameData.tbl <- renderTable(head(GameData.i))            
-      output$earnings <- renderPlot({
-        
-        plot(x = GameData.i$trial, 
-             y = cumsum(GameData.i$outcome), 
-             type = "b", 
-             xlab = "Trial", 
-             ylab = "Points")
-        
-      }) 
-      
-      Sys.sleep(.25)
-      incProgress(1)
-      
-      CurrentValues$page <- "goodbye"
-      
-    })
-    
-  })
+# Section F3: Event tracking buttons
+
+# Reset current values at start of a game
+observeEvent(input$gt_startnextgame, {
   
-  # End game button
-  observeEvent(input$gameend, {
-    
-    if(CurrentValues$game != games.n) {
-      
-      CurrentValues$game <- CurrentValues$game + 1
-      CurrentValues$trial <- 1
-      CurrentValues$selection <- 0
-      CurrentValues$points.cum <- 0
-      CurrentValues$page <- "startnextgame"
-      
-    } else {
-      
-      CurrentValues$page <- "allgameend"}
-    
-  })
+  # Increase game number by 1
+  CurrentValues$game <- CurrentValues$game + 1
   
-  # Section F3: Event tracking buttons
+  # Set CurrentValues to defaults for start of next game
+  CurrentValues$trial <- 1
+  CurrentValues$selection <- 0
+  CurrentValues$points.cum <- 0
   
-  # Last trial in a game
-  observeEvent(CurrentValues$trial, {
+  
+})
+
+# Watch for last trial in a game
+observeEvent(CurrentValues$trial, {
+  
+  if(CurrentValues$trial == (trials.n + 1)) {
     
-    if(CurrentValues$trial == (trials.n + 1)) {
+    CurrentValues$page <- "gameend"
+    
+  }
+  
+})
+
+# --------------------------------
+# Section G: Save data
+# --------------------------------
+observeEvent(input$gt_goodbye, {(
+  
+  # Create progress message   
+  withProgress(message = "Saving data...", value = 0, {
+    
+    incProgress(.25)
+    
+    response.time.v <- c(NA, round(GameData$time[2:(trials.n)] - GameData$time[1:(trials.n - 1)], 4))
+    
+    # Write GameData to a dataframe
+    
+
+    
+    GameData.i <- data.frame("game" = GameData$game,
+                             "trial" = GameData$trial,
+                             "time" = GameData$time,
+                             "selection" = GameData$selection,
+                             "outcome" = GameData$outcome,
+                             "points.cum" = GameData$points.cum)
+    
+    GameDatafileName <- paste0(input$workerid, as.integer(Sys.time()), digest::digest(GameData.i), "_g.csv")
+    
+    # Write Survey data
+    if(length(input$workerid) == 0) {workerid.i <- NA} else {workerid.i <- input$workerid}
+    if(length(input$comments) == 0) {comments.i <- NA} else {comments.i <- input$comments}
+    if(length(input$age) == 0) {age.i <- NA} else {age.i <- input$age}
+    if(length(input$sex) == 0) {sex.i <- NA} else {sex.i <- input$sex}
+    if(length(input$dontuse) == 0) {dontuse.i <- NA} else {dontuse.i <- input$dontuse}
+    if(length(input$interesting) == 0) {interesting.i <- NA} else {interesting.i <- input$interesting}
+    if(length(input$playedbefore) == 0) {playedbefore.i <- NA} else {playedbefore.i <- input$playedbefore}
+
+    SurveyData.i <- data.frame("workerid" = workerid.i,
+                               "age" = age.i,
+                               "sex" = sex.i,
+                               "comments" = comments.i,
+                               "dontuse" = dontuse.i,
+                               "interesting" = interesting.i,
+                               "playedbefore" = playedbefore.i,
+                               "option.order" = paste(locations.r, collapse = ";"),
+                               "completion.code" = completion.code)
+    
+
+    SurveyDatafileName <- paste0(input$workerid,
+                                 as.integer(Sys.time()),
+                                 digest::digest(SurveyData.i), "_s.csv")
+    
+    incProgress(.5)
+    
+    
+    if(saveDataLocation == "dropbox") {
       
-      CurrentValues$page <- "gameend"
+      GameDatafilePath <- file.path(tempdir(), GameDatafileName)
+      write.csv(GameData.i, GameDatafilePath, row.names = FALSE, quote = TRUE)
+      rdrop2::drop_upload(GameDatafilePath, dest = outputDir, dtoken = droptoken)
+      
+      SurveyDatafilePath <- file.path(tempdir(), SurveyDatafileName)
+      write.csv(SurveyData.i, SurveyDatafilePath, row.names = FALSE, quote = TRUE)
+      rdrop2::drop_upload(SurveyDatafilePath, dest = outputDir, dtoken = droptoken)
       
     }
     
+    # if(saveDataLocation == "email") {
+    #   
+    #   GameDatafilePath <- file.path(tempdir(), GameDatafileName)
+    #   write.csv(GameData.i, GameDatafilePath, row.names = FALSE, quote = TRUE)
+    # 
+    #   SurveyDatafilePath <- file.path(tempdir(), SurveyDatafileName)
+    #   write.csv(SurveyData.i, SurveyDatafilePath, row.names = FALSE, quote = TRUE)
+    # 
+    #   attachmentObject <- mime_part(x = "GameDatafilePath", name = GameDatafileName)
+    #   attachmentObject2 <- mime_part(x = "SurveyDatafilePath", name = SurveyDatafileName)
+    #   bodyWithAttachment <- list(body, attachmentObject, attachmentObject2)
+    #   
+    #   sendmail(from = from, to = to, subject = subject, msg = bodyWithAttachment, control = mailControl)
+    #   
+    # }
+    
+    
+    # Write survey data 
+    
+    
+    incProgress(.75)
+    
+    # Some interesting plots (not necessary)
+    
+    output$GameData.tbl <- renderTable(head(GameData.i))            
+    output$EarningsPlot <- renderPlot({
+      
+      my.cols <- yarrr::piratepal("xmen", trans = .3)
+      
+      plot(1, xlim = c(0, trials.n), ylim = c(min(GameData.i$points.cum), max(GameData.i$points.cum)), 
+           xlab = "Draw", ylab = "Points earned", main = "Your Earnings over time in each Game", type = "n")
+      
+      grid()
+      
+      for(game.i in 1:games.n) {
+        
+        lines(x = subset(GameData.i, game == game.i)$trial,
+              y = subset(GameData.i, game == game.i)$points.cum,
+              type = "l", col = my.cols[game.i], lwd = 3)
+        
+      }
+      
+      legend("topleft", legend = paste("Game", 1:games.n), 
+             col = my.cols, lty = 1, lwd = 2, bty = "n")
+      
+    }) 
+    
+    Sys.sleep(.25)
+    incProgress(1)
+    
+    
+    
   })
+  
+)})
   
 }
 

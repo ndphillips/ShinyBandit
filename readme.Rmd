@@ -3,16 +3,16 @@ title: "Shiny Bandit"
 author: "Nathaniel Phillips"
 date: "18 January 2017"
 output: html_document
+bibliography: bibliography.bib
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-
 ## Task Description
 
-This app runs a standard (3-armed) bandit task. The bandit task is a prototypical example of a *reinforcement learning* task, where decision makers need to maximize their resources by strategically interacting with an uncertain environment.
+This app runs a standard (3-armed) bandit task. The bandit task is a prototypical example of a *reinforcement learning* task, where decision makers need to maximize their resources by strategically interacting with an uncertain environment [@sutton1998reinforcement].
 
 In the task, players are presented with options (in this case, 3) represented as boxes. The boxes contain many tickets. Each ticket has a point value written on it ranging from -100 to +100. Tickets with high positive values are valuable and result in points, while tickets with low negative values are to be avoided as they remove points.
 
@@ -57,8 +57,6 @@ Here is a list of the major game parameters you can change.
 |     `randomize.locations`| logical |  Should the locations of options be randomized each game?|
 |     `randomize.outcomes`| logical |  Should the order of outcomes within each option be randomized each game?|
 
-Option distributions are defined in the `distributions` matrix. The matrix can have in
-
 ## Changing the number of options
 
 By default, the game has 3 options. To change the number of options, you must make two changes:
@@ -71,21 +69,22 @@ By default, the game has 3 options. To change the number of options, you must ma
 
 I know of two methods to save data from the experiment: uploading directly to Dropbox, and email.
 
-## Uploading data to Dropbox
+### Uploading data to Dropbox
 
 In order to upload data to Dropbox, you must include a file called `droptoken.rds` containing your dropbox authentication token. This file must be in the same folder as the main application file `ShinyBanditMulti_app.R`. You can create this file by running the following:
 
 ```{r eval = FALSE}
-install.packages("rdrop2")                 # install rdrop2 packagre
+install.packages("rdrop2")                 # install rdrop2 package
 droptoken <- rdrop2::drop_auth()           # Will open a browser and ask you to login
 saveRDS(droptoken, file = "droptoken.rds") # Save token as droptoken.rds
 ```
 
 You can specify the folder to save your data in with the `outputDir` object (This object will later on be passed to the `rdrop2::drop_upload()` function when it is time to actually save the data). For example, `outputDir <- "ShinyApp/data"` will save the data to a data folder contained in a ShinyApp folder. 
 
-## Emailing data
+### Emailing data
 
-Still working on this...
+You can have the server automatically email data to you as an attachment using the `sendmailR` package. I'm still working on getting this to work...
 
 ## Notes
 
+# References
