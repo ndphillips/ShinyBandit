@@ -31,23 +31,31 @@ Here are some examples of ShinyBandit you can play right now!
 |:----------------------|:---------------|:--------------|
 |     3 Armed Bandit| [Game Link](https://econpsychbasel.shinyapps.io/ShinyBandit/)| [GitHub Source Code](https://github.com/ndphillips/ShinyBandit/blob/master/ShinyBandit_app.R)|
 
-
 # Using the Application
 
-The game is stored in the `ShinyBandit_app.R` file.
+The game is stored in the `ShinyBandit_app.R` file. The app is separated into several sections:
 
-More information coming soon...
+| Section| Description|
+|:------|:---------------|:------------------------------- | 
+| 0| Load Libraries| Load all libraries necessary to run the application.|
+| A| Setup the game| Define game parameters (e.g.; distributions) in section A1, define how data will be saved (A2), and do miscellaneous data formatting (A3) and object creation (A4)|
+| B| Overall Layout| ...|
+| C| Reactive Values |Define the reactive values which store user inputs throughout the game. `CurrentValues` stores up-to-date (scaler) values of critical game parameters, while `GameValues` stores historical (vector) data|
+|D| Page Layouts | The content and layout of separate pages (e.g.; welcome page, instructions page, game page) |
+| E | Game Display | The main game display |
+| F | Event Actions | Define the result of buttons such as option selection in a game (F1), and page navigation (F2). Additionally, define event tracking that watches for critical moments in the game like when a single game is finished, or all games are finished (F3) |
 
 ## Game parameters
 
 Here is a list of the major game parameters you can change.
 
 | Parameter| Class| Description
-|------:|---------- | ---------------------------------------:|
+|:------|---------- |:---------------------------------------|
 |     `distributions`| matrix |  Population distributions of outcomes for options. Each columnn is an option.|
 |     `trials.max`| integer |   Maximum number of trials in each game|
 |     `games.n` |   integer | Number of games to be played|
-|     `randomize.locations`| logical |    Should the locations of options be randomized each game?|
+|     `randomize.locations`| logical |  Should the locations of options be randomized each game?|
+|     `randomize.outcomes`| logical |  Should the order of outcomes within each option be randomized each game?|
 
 Option distributions are defined in the `distributions` matrix. The matrix can have in
 
@@ -58,6 +66,10 @@ By default, the game has 3 options. To change the number of options, you must ma
 1. Make sure the number of columns in the `distributions` matrix is equal to the number of options you want.
 2. Change the `actionButtons` contained in the game page. For example, for a game with 2 options, include only two buttons (e.g.; `selectA` and `selectB`). For a game with 5 options, include buttons for all 5 options.
 3. In section `4A`, 
+
+# Saving Data
+
+I know of two methods to save data from the experiment: uploading directly to Dropbox, and email.
 
 ## Uploading data to Dropbox
 
@@ -73,8 +85,7 @@ You can specify the folder to save your data in with the `outputDir` object (Thi
 
 ## Emailing data
 
-
+Still working on this...
 
 ## Notes
 
-- Currently, the code is restricted to a bandit task with 3 options (aka, a 3-armed bandit). However, it can be easily adapted to account for fewer or more options.

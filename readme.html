@@ -154,8 +154,58 @@ $(document).ready(function () {
 </div>
 <div id="using-the-application" class="section level1">
 <h1>Using the Application</h1>
-<p>The game is stored in the <code>ShinyBandit_app.R</code> file.</p>
-<p>More information coming soon…</p>
+<p>The game is stored in the <code>ShinyBandit_app.R</code> file. The app is separated into several sections:</p>
+<table style="width:81%;">
+<colgroup>
+<col width="11%"></col>
+<col width="23%"></col>
+<col width="45%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Section</th>
+<th align="left">Description</th>
+<th align="left"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">0</td>
+<td align="left">Load Libraries</td>
+<td align="left">Load all libraries necessary to run the application.</td>
+</tr>
+<tr class="even">
+<td align="left">A</td>
+<td align="left">Setup the game</td>
+<td align="left">Define game parameters (e.g.; distributions) in section A1, define how data will be saved (A2), and do miscellaneous data formatting (A3) and object creation (A4)</td>
+</tr>
+<tr class="odd">
+<td align="left">B</td>
+<td align="left">Overall Layout</td>
+<td align="left">…</td>
+</tr>
+<tr class="even">
+<td align="left">C</td>
+<td align="left">Reactive Values</td>
+<td align="left">Define the reactive values which store user inputs throughout the game. <code>CurrentValues</code> stores up-to-date (scaler) values of critical game parameters, while <code>GameValues</code> stores historical (vector) data</td>
+</tr>
+<tr class="odd">
+<td align="left">D</td>
+<td align="left">Page Layouts</td>
+<td align="left">The content and layout of separate pages (e.g.; welcome page, instructions page, game page)</td>
+</tr>
+<tr class="even">
+<td align="left">E</td>
+<td align="left">Game Display</td>
+<td align="left">The main game display</td>
+</tr>
+<tr class="odd">
+<td align="left">F</td>
+<td align="left">Event Actions</td>
+<td align="left">Define the result of buttons such as option selection in a game (F1), and page navigation (F2). Additionally, define event tracking that watches for critical moments in the game like when a single game is finished, or all games are finished (F3)</td>
+</tr>
+</tbody>
+</table>
 <div id="game-parameters" class="section level2">
 <h2>Game parameters</h2>
 <p>Here is a list of the major game parameters you can change.</p>
@@ -167,31 +217,36 @@ $(document).ready(function () {
 </colgroup>
 <thead>
 <tr class="header">
-<th align="right">Parameter</th>
+<th align="left">Parameter</th>
 <th>Class</th>
-<th align="right">Description</th>
+<th align="left">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="right"><code>distributions</code></td>
+<td align="left"><code>distributions</code></td>
 <td>matrix</td>
-<td align="right">Population distributions of outcomes for options. Each columnn is an option.</td>
+<td align="left">Population distributions of outcomes for options. Each columnn is an option.</td>
 </tr>
 <tr class="even">
-<td align="right"><code>trials.max</code></td>
+<td align="left"><code>trials.max</code></td>
 <td>integer</td>
-<td align="right">Maximum number of trials in each game</td>
+<td align="left">Maximum number of trials in each game</td>
 </tr>
 <tr class="odd">
-<td align="right"><code>games.n</code></td>
+<td align="left"><code>games.n</code></td>
 <td>integer</td>
-<td align="right">Number of games to be played</td>
+<td align="left">Number of games to be played</td>
 </tr>
 <tr class="even">
-<td align="right"><code>randomize.locations</code></td>
+<td align="left"><code>randomize.locations</code></td>
 <td>logical</td>
-<td align="right">Should the locations of options be randomized each game?</td>
+<td align="left">Should the locations of options be randomized each game?</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>randomize.outcomes</code></td>
+<td>logical</td>
+<td align="left">Should the order of outcomes within each option be randomized each game?</td>
 </tr>
 </tbody>
 </table>
@@ -206,6 +261,10 @@ $(document).ready(function () {
 <li>In section <code>4A</code>,</li>
 </ol>
 </div>
+</div>
+<div id="saving-data" class="section level1">
+<h1>Saving Data</h1>
+<p>I know of two methods to save data from the experiment: uploading directly to Dropbox, and email.</p>
 <div id="uploading-data-to-dropbox" class="section level2">
 <h2>Uploading data to Dropbox</h2>
 <p>In order to upload data to Dropbox, you must include a file called <code>droptoken.rds</code> containing your dropbox authentication token. This file must be in the same folder as the main application file <code>ShinyBanditMulti_app.R</code>. You can create this file by running the following:</p>
@@ -216,12 +275,10 @@ saveRDS(droptoken, file = &quot;droptoken.rds&quot;) # Save token as droptoken.r
 </div>
 <div id="emailing-data" class="section level2">
 <h2>Emailing data</h2>
+<p>Still working on this…</p>
 </div>
 <div id="notes" class="section level2">
 <h2>Notes</h2>
-<ul>
-<li>Currently, the code is restricted to a bandit task with 3 options (aka, a 3-armed bandit). However, it can be easily adapted to account for fewer or more options.</li>
-</ul>
 </div>
 </div>
 
