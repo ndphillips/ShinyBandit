@@ -155,59 +155,50 @@ $(document).ready(function () {
 <div id="using-the-application" class="section level1">
 <h1>Using the Application</h1>
 <p>The game is stored in the <code>ShinyBandit_app.R</code> file. The app is separated into several sections:</p>
-<table style="width:81%;">
+<table style="width:85%;">
 <colgroup>
-<col width="11%"></col>
-<col width="23%"></col>
-<col width="45%"></col>
+<col width="22%"></col>
+<col width="62%"></col>
 </colgroup>
 <thead>
 <tr class="header">
 <th align="left">Section</th>
-<th align="left">Name</th>
 <th align="left">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">0</td>
-<td align="left">Load Libraries</td>
-<td align="left">Load all libraries necessary to run the application.</td>
+<td align="left">0: Load Libraries</td>
+<td align="left">Load all libraries necessary to run the application. Be sure to include <code>shiny</code> for all Shiny functions, <code>rdrop2</code> for Dropbox integration, and <code>sendmailR</code> for sending data as emails.</td>
 </tr>
 <tr class="even">
-<td align="left">A</td>
-<td align="left">Setup the game</td>
-<td align="left">Define game parameters (e.g.; distributions) in section A1, define how data will be saved (A2), and do miscellaneous data formatting (A3) and object creation (A4)</td>
+<td align="left">A: Setup the game</td>
+<td align="left">Define game parameters (A1), define how data will be saved (A2), and do miscellaneous data formatting (A3) and object creation (A4)</td>
 </tr>
 <tr class="odd">
-<td align="left">B</td>
-<td align="left">Overall Layout</td>
-<td align="left">…</td>
+<td align="left">B: Overall Layout</td>
+<td align="left">Define the app title and add custom CSS tags.</td>
 </tr>
 <tr class="even">
-<td align="left">C</td>
-<td align="left">Reactive Values</td>
+<td align="left">C: Reactive Values</td>
 <td align="left">Define the reactive values which store user inputs throughout the game. <code>CurrentValues</code> stores up-to-date (scaler) values of critical game parameters, while <code>GameValues</code> stores historical (vector) data</td>
 </tr>
 <tr class="odd">
-<td align="left">D</td>
-<td align="left">Page Layouts</td>
-<td align="left">The content and layout of separate pages (e.g.; welcome page, instructions page, game page)</td>
+<td align="left">D: Page Layouts</td>
+<td align="left">The content and layout of distinct pages (e.g.; welcome page, instructions page, game page)</td>
 </tr>
 <tr class="even">
-<td align="left">E</td>
-<td align="left">Game Display</td>
+<td align="left">E: Game Display</td>
 <td align="left">The main game display</td>
 </tr>
 <tr class="odd">
-<td align="left">F</td>
-<td align="left">Event Actions</td>
+<td align="left">F: Event Actions</td>
 <td align="left">Define the result of buttons such as option selection in a game (F1), and page navigation (F2). Additionally, define event tracking that watches for critical moments in the game like when a single game is finished, or all games are finished (F3)</td>
 </tr>
 </tbody>
 </table>
-<div id="game-parameters" class="section level2">
-<h2>Game parameters</h2>
+<div id="a-game-parameters" class="section level2">
+<h2>A: Game parameters</h2>
 <p>Here is a list of the major game parameters you can change.</p>
 <table style="width:83%;">
 <colgroup>

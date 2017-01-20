@@ -35,17 +35,17 @@ Here are some examples of ShinyBandit you can play right now!
 
 The game is stored in the `ShinyBandit_app.R` file. The app is separated into several sections:
 
-| Section| Name| Description
-|:------|:---------------|:------------------------------- | 
-| 0| Load Libraries| Load all libraries necessary to run the application.|
-| A| Setup the game| Define game parameters (e.g.; distributions) in section A1, define how data will be saved (A2), and do miscellaneous data formatting (A3) and object creation (A4)|
-| B| Overall Layout| ...|
-| C| Reactive Values |Define the reactive values which store user inputs throughout the game. `CurrentValues` stores up-to-date (scaler) values of critical game parameters, while `GameValues` stores historical (vector) data|
-|D| Page Layouts | The content and layout of separate pages (e.g.; welcome page, instructions page, game page) |
-| E | Game Display | The main game display |
-| F | Event Actions | Define the result of buttons such as option selection in a game (F1), and page navigation (F2). Additionally, define event tracking that watches for critical moments in the game like when a single game is finished, or all games are finished (F3) |
+| Section|  Description
+|:--------------|:------------------------------------------- | 
+| 0: Load Libraries| Load all libraries necessary to run the application. Be sure to include `shiny` for all Shiny functions, `rdrop2` for Dropbox integration, and `sendmailR` for sending data as emails.|
+| A: Setup the game| Define game parameters (A1), define how data will be saved (A2), and do miscellaneous data formatting (A3) and object creation (A4)|
+| B: Overall Layout | Define the app title and add custom CSS tags.|
+| C: Reactive Values |Define the reactive values which store user inputs throughout the game. `CurrentValues` stores up-to-date (scaler) values of critical game parameters, while `GameValues` stores historical (vector) data|
+|D: Page Layouts | The content and layout of distinct pages (e.g.; welcome page, instructions page, game page) |
+| E: Game Display | The main game display |
+| F: Event Actions | Define the result of buttons such as option selection in a game (F1), and page navigation (F2). Additionally, define event tracking that watches for critical moments in the game like when a single game is finished, or all games are finished (F3) |
 
-## Game parameters
+## A: Game parameters
 
 Here is a list of the major game parameters you can change.
 
