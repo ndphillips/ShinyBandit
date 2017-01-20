@@ -76,7 +76,6 @@ if(saveDataLocation == "email") {  # not working yet!
 }
 if(saveDataLocation == "local") {   # not working yet!
   
-  
 }
 
 # Section A3: Reformat data
