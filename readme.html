@@ -130,13 +130,99 @@ $(document).ready(function () {
 <p>In the task, players are presented with options (in this case, 3) represented as boxes. The boxes contain many tickets. Each ticket has a point value written on it ranging from -100 to +100. Tickets with high positive values are valuable and result in points, while tickets with low negative values are to be avoided as they remove points.</p>
 <p>Each box has its own distribution of tickets. However, players do not know for sure what the distribution of ticket values is in each box. Some boxes may have higher ticket values on average than others, and some may have more variable ticket values than others.</p>
 <p>Players have a fixed (e.g.; 50) number of trials where they can select a box and draw a random ticket. When a ticket is drawn, the point value on the ticket is displayed and its value is added (or subtracted) to the player’s cumulative point total. The ticket is then returned to the box. When the final trial is completed, the game is over.</p>
+<p>Players play the game several times. The distributions (boxes) are the same in each game. However, their location is randomly determined at the start of each game. Therefore, while players can learn about the overall decision environment from one game to another, they will always have to learn which option is which in each game.</p>
 </div>
-<div id="notes" class="section level1">
-<h1>Notes</h1>
+<div id="examples" class="section level2">
+<h2>Examples</h2>
+<p>Here are some examples of ShinyBandit you can play right now!</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Name</th>
+<th align="left">Link</th>
+<th align="left">Code</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">3 Armed Bandit</td>
+<td align="left"><a href="https://econpsychbasel.shinyapps.io/ShinyBandit/">Game Link</a></td>
+<td align="left"><a href="https://github.com/ndphillips/ShinyBandit/blob/master/ShinyBandit_app.R">GitHub Source Code</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="using-the-application" class="section level1">
+<h1>Using the Application</h1>
+<p>The game is stored in the <code>ShinyBandit_app.R</code> file.</p>
+<p>More information coming soon…</p>
+<div id="game-parameters" class="section level2">
+<h2>Game parameters</h2>
+<p>Here is a list of the major game parameters you can change.</p>
+<table style="width:83%;">
+<colgroup>
+<col width="11%"></col>
+<col width="15%"></col>
+<col width="56%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th align="right">Parameter</th>
+<th>Class</th>
+<th align="right">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right"><code>distributions</code></td>
+<td>matrix</td>
+<td align="right">Population distributions of outcomes for options. Each columnn is an option.</td>
+</tr>
+<tr class="even">
+<td align="right"><code>trials.max</code></td>
+<td>integer</td>
+<td align="right">Maximum number of trials in each game</td>
+</tr>
+<tr class="odd">
+<td align="right"><code>games.n</code></td>
+<td>integer</td>
+<td align="right">Number of games to be played</td>
+</tr>
+<tr class="even">
+<td align="right"><code>randomize.locations</code></td>
+<td>logical</td>
+<td align="right">Should the locations of options be randomized each game?</td>
+</tr>
+</tbody>
+</table>
+<p>Option distributions are defined in the <code>distributions</code> matrix. The matrix can have in</p>
+</div>
+<div id="changing-the-number-of-options" class="section level2">
+<h2>Changing the number of options</h2>
+<p>By default, the game has 3 options. To change the number of options, you must make two changes:</p>
+<ol style="list-style-type: decimal">
+<li>Make sure the number of columns in the <code>distributions</code> matrix is equal to the number of options you want.</li>
+<li>Change the <code>actionButtons</code> contained in the game page. For example, for a game with 2 options, include only two buttons (e.g.; <code>selectA</code> and <code>selectB</code>). For a game with 5 options, include buttons for all 5 options.</li>
+<li>In section <code>4A</code>,</li>
+</ol>
+</div>
+<div id="uploading-data-to-dropbox" class="section level2">
+<h2>Uploading data to Dropbox</h2>
+<p>In order to upload data to Dropbox, you must include a file called <code>droptoken.rds</code> containing your dropbox authentication token. This file must be in the same folder as the main application file <code>ShinyBanditMulti_app.R</code>. You can create this file by running the following:</p>
+<pre class="r"><code>install.packages(&quot;rdrop2&quot;)                 # install rdrop2 packagre
+droptoken &lt;- rdrop2::drop_auth()           # Will open a browser and ask you to login
+saveRDS(droptoken, file = &quot;droptoken.rds&quot;) # Save token as droptoken.rds</code></pre>
+<p>You can specify the folder to save your data in with the <code>outputDir</code> object (This object will later on be passed to the <code>rdrop2::drop_upload()</code> function when it is time to actually save the data). For example, <code>outputDir &lt;- &quot;ShinyApp/data&quot;</code> will save the data to a data folder contained in a ShinyApp folder.</p>
+</div>
+<div id="emailing-data" class="section level2">
+<h2>Emailing data</h2>
+</div>
+<div id="notes" class="section level2">
+<h2>Notes</h2>
 <ul>
-<li><p>Currently, the code is restricted to a bandit task with 3 options (aka, a 3-armed bandit). However, it can be easily adapted to account for fewer or more options.</p></li>
-<li></li>
+<li>Currently, the code is restricted to a bandit task with 3 options (aka, a 3-armed bandit). However, it can be easily adapted to account for fewer or more options.</li>
 </ul>
+</div>
 </div>
 
 

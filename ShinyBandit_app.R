@@ -41,13 +41,13 @@ library(digest)
 # Section A1: GAME PARAMETERS
 
 distributions <- round(
-  cbind(rnorm(n = 1e5, mean = 0, sd = 3),
-        rnorm(n = 1e5, mean = 5, sd = 10),
-        rnorm(n = 1e5, mean = -2, sd = 10)), 0)
+  cbind(rnorm(n = 1e5, mean = 0, sd = 5),
+        rnorm(n = 1e5, mean = 2.5, sd = 5),
+        rnorm(n = 1e5, mean = -1, sd = 8)), 0)
 
-trials.n <- 5                          # Trials per game
+trials.n <- 50                         # Trials per game
 practice.n <- 10                        # Trials in practice game
-games.n <- 1                            # Number of games
+games.n <- 3                            # Number of games
 randomize.locations <- TRUE             # Should the location of options be randomized?
 randomize.outcomes <- TRUE              # Should the order of outcomes be randomized?
 saveDataLocation <- "dropbox"           # Either dropbox, email, or local
@@ -59,6 +59,7 @@ if(saveDataLocation == "dropbox") {
   droptoken <- readRDS("droptoken.rds")        # Reads in authentication for dropbox
   
 }
+
 if(saveDataLocation == "email") {  # not working yet!
   
   # See https://goo.gl/kQLrTk for guide
@@ -120,7 +121,9 @@ server <- function(input, output, session) {
   
   output$MainAction <- renderUI( {
     PageLayouts()
-  })  
+  
+})
+  
   # --------------------------------
   # Section C: Define Reactive Values
   #   These store the main values in the game

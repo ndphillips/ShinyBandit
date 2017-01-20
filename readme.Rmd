@@ -23,7 +23,20 @@ When the final trial is completed, the game is over.
 
 Players play the game several times. The distributions (boxes) are the same in each game. However, their location is randomly determined at the start of each game. Therefore, while players can learn about the overall decision environment from one game to another, they will always have to learn which option is which in each game.
 
+## Examples
+
+Here are some examples of ShinyBandit you can play right now!
+
+| Name| Link| Code | 
+|:----------------------|:---------------|:--------------|
+|     3 Armed Bandit| [Game Link](https://econpsychbasel.shinyapps.io/ShinyBandit/)| [GitHub Source Code](https://github.com/ndphillips/ShinyBandit/blob/master/ShinyBandit_app.R)|
+
+
 # Using the Application
+
+The game is stored in the `ShinyBandit_app.R` file.
+
+More information coming soon...
 
 ## Game parameters
 
