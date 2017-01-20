@@ -35,7 +35,7 @@ Here are some examples of ShinyBandit you can play right now!
 
 The game is stored in the `ShinyBandit_app.R` file. The app is separated into several sections:
 
-| Section| Description|
+| Section| Name| Description
 |:------|:---------------|:------------------------------- | 
 | 0| Load Libraries| Load all libraries necessary to run the application.|
 | A| Setup the game| Define game parameters (e.g.; distributions) in section A1, define how data will be saved (A2), and do miscellaneous data formatting (A3) and object creation (A4)|
