@@ -173,7 +173,7 @@ $(document).ready(function () {
 </tr>
 <tr class="even">
 <td align="left">A: Setup the game</td>
-<td align="left">Define game parameters (A1), define how data will be saved (A2), and do miscellaneous data formatting (A3) and object creation (A4)</td>
+<td align="left">Define game parameters (A1), define how data will be saved (A2)</td>
 </tr>
 <tr class="odd">
 <td align="left">B: Overall Layout</td>
@@ -189,11 +189,15 @@ $(document).ready(function () {
 </tr>
 <tr class="even">
 <td align="left">E: Game Display</td>
-<td align="left">The main game display</td>
+<td align="left">The main game display an</td>
 </tr>
 <tr class="odd">
-<td align="left">F: Event Actions</td>
-<td align="left">Define the result of buttons such as option selection in a game (F1), and page navigation (F2). Additionally, define event tracking that watches for critical moments in the game like when a single game is finished, or all games are finished (F3)</td>
+<td align="left">F: Event (button) actions</td>
+<td align="left">Define the result of buttons such as page navigation (F1), option selection (F2), and event tracking (F3)</td>
+</tr>
+<tr class="even">
+<td align="left">G: Save data</td>
+<td align="left">Define how data is saved and exported</td>
 </tr>
 </tbody>
 </table>
@@ -247,8 +251,8 @@ $(document).ready(function () {
 <p>By default, the game has 3 options. To change the number of options, you must make two changes:</p>
 <ol style="list-style-type: decimal">
 <li>Make sure the number of columns in the <code>distributions</code> matrix is equal to the number of options you want.</li>
-<li>Change the <code>actionButtons</code> contained in the game page. For example, for a game with 2 options, include only two buttons (e.g.; <code>selectA</code> and <code>selectB</code>). For a game with 5 options, include buttons for all 5 options.</li>
-<li>In section <code>4A</code>,</li>
+<li>Change the <code>actionButtons</code> contained in the game page (Section D). For example, for a game with 2 options, include only two buttons (e.g.; <code>selectA</code> and <code>selectB</code>). For a game with 5 options, include buttons for all 5 options.</li>
+<li>In section F2, add (or subtract) appropriate <code>observeEvent()</code> calls to track all options.</li>
 </ol>
 </div>
 </div>

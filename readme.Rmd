@@ -38,12 +38,13 @@ The game is stored in the `ShinyBandit_app.R` file. The app is separated into se
 | Section|  Description
 |:-----------------|:------------------------------------- | 
 | 0: Load Libraries| Load all libraries necessary to run the application. Be sure to include `shiny` for all Shiny functions, `rdrop2` for Dropbox integration, and `sendmailR` for sending data as emails.|
-| A: Setup the game| Define game parameters (A1), define how data will be saved (A2), and do miscellaneous data formatting (A3) and object creation (A4)|
+| A: Setup the game| Define game parameters (A1), define how data will be saved (A2)|
 | B: Overall Layout | Define the app title and add custom CSS tags.|
 | C: Reactive Values |Define the reactive values which store user inputs throughout the game. `CurrentValues` stores up-to-date (scaler) values of critical game parameters, while `GameValues` stores historical (vector) data|
-|D: Page Layouts | The content and layout of distinct pages (e.g.; welcome page, instructions page, game page) |
-| E: Game Display | The main game display |
-| F: Event Actions | Define the result of buttons such as option selection in a game (F1), and page navigation (F2). Additionally, define event tracking that watches for critical moments in the game like when a single game is finished, or all games are finished (F3) |
+| D: Page Layouts | The content and layout of distinct pages (e.g.; welcome page, instructions page, game page) |
+| E: Game Display | The main game display an |
+| F: Event (button) actions | Define the result of buttons such as page navigation (F1), option selection (F2), and event tracking (F3)|
+| G: Save data | Define how data is saved and exported|
 
 ## A: Game parameters
 
@@ -62,8 +63,8 @@ Here is a list of the major game parameters you can change.
 By default, the game has 3 options. To change the number of options, you must make two changes:
 
 1. Make sure the number of columns in the `distributions` matrix is equal to the number of options you want.
-2. Change the `actionButtons` contained in the game page. For example, for a game with 2 options, include only two buttons (e.g.; `selectA` and `selectB`). For a game with 5 options, include buttons for all 5 options.
-3. In section `4A`, 
+2. Change the `actionButtons` contained in the game page (Section D). For example, for a game with 2 options, include only two buttons (e.g.; `selectA` and `selectB`). For a game with 5 options, include buttons for all 5 options.
+3. In section F2, add (or subtract) appropriate `observeEvent()` calls to track all options.
 
 # Saving Data
 

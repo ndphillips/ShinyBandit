@@ -62,7 +62,6 @@ if(saveDataLocation == "dropbox") {
   droptoken <- readRDS("droptoken.rds")        # Reads in authentication for dropbox
   
 }
-
 if(saveDataLocation == "email") {  # not working yet!
   
   # See https://goo.gl/kQLrTk for guide
@@ -125,27 +124,27 @@ server <- function(input, output, session) {
     PageLayouts()
   
 })
-  
-  # --------------------------------
-  # Section C: Define Reactive Values
-  #   These store the main values in the game
-  # --------------------------------
-  
-  # CurrentValues stores scalers representing the latest game outcomes
-  CurrentValues <- reactiveValues(page = "welcome",     # Current page
-                                  game = 0,             # Current game
-                                  trial = 1,            # Current trial
-                                  selection = 0,        # Selection
-                                  outcome = 0,          # Outcome
-                                  points.cum = 0)       # Points earned
-  
-  # GameValues stores vectors of histories
-  GameData <- reactiveValues(game = c(),
-                             trial = c(),          
-                             time = c(),
-                             selection = c(),
-                             outcome = c(),
-                             points.cum = c())
+
+# --------------------------------
+# Section C: Define Reactive Values
+#   These store the main values in the game
+# --------------------------------
+
+# CurrentValues stores scalers representing the latest game outcomes
+CurrentValues <- reactiveValues(page = "welcome",     # Current page
+                                game = 0,             # Current game
+                                trial = 1,            # Current trial
+                                selection = 0,        # Selection
+                                outcome = 0,          # Outcome
+                                points.cum = 0)       # Points earned
+
+# GameValues stores vectors of histories
+GameData <- reactiveValues(game = c(),
+                           trial = c(),          
+                           time = c(),
+                           selection = c(),
+                           outcome = c(),
+                           points.cum = c())
   
   # --------------------------------
   # Section D: Page Layouts
@@ -477,7 +476,31 @@ server <- function(input, output, session) {
   # Section F: Event (e.g.; button) actions
   # --------------------------------
   
-  # Section F1: Option selection buttons
+  
+  # Section F1: Page Navigation Buttons
+  observeEvent(input$gt_instructions, {CurrentValues$page <- "instructions"})
+  observeEvent(input$gt_gameend, {CurrentValues$page <- "gameend"})
+  observeEvent(input$gt_game, {CurrentValues$page <- "game"})
+  observeEvent(input$gt_postsurvey, {CurrentValues$page <- "postsurvey"})
+  observeEvent(input$gt_goodbye, {CurrentValues$page <- "goodbye"})
+  observeEvent(input$gt_startnextgame, {CurrentValues$page <- "startnextgame"})
+  observeEvent(input$gameend, {
+    
+    if(CurrentValues$game != games.n) {
+      
+      CurrentValues$game <- CurrentValues$game + 1
+      CurrentValues$trial <- 1
+      CurrentValues$selection <- 0
+      CurrentValues$points.cum <- 0
+      CurrentValues$page <- "startnextgame"
+      
+    } else {
+      
+      CurrentValues$page <- "allgameend"}
+    
+  })
+  
+  # Section F2: Option selection buttons
   selection.update <- function(selection.i,
                                trial.i,
                                game.i) {
@@ -512,28 +535,7 @@ observeEvent(input$SelectA, {selection.update(1, CurrentValues$trial, CurrentVal
 observeEvent(input$SelectB, {selection.update(2, CurrentValues$trial, CurrentValues$game)})
 observeEvent(input$SelectC, {selection.update(3, CurrentValues$trial, CurrentValues$game)})
 
-# Section F2: Page Navigation Buttons
-observeEvent(input$gt_instructions, {CurrentValues$page <- "instructions"})
-observeEvent(input$gt_gameend, {CurrentValues$page <- "gameend"})
-observeEvent(input$gt_game, {CurrentValues$page <- "game"})
-observeEvent(input$gt_postsurvey, {CurrentValues$page <- "postsurvey"})
-observeEvent(input$gt_goodbye, {CurrentValues$page <- "goodbye"})
-observeEvent(input$gt_startnextgame, {CurrentValues$page <- "startnextgame"})
-observeEvent(input$gameend, {
-  
-  if(CurrentValues$game != games.n) {
-    
-    CurrentValues$game <- CurrentValues$game + 1
-    CurrentValues$trial <- 1
-    CurrentValues$selection <- 0
-    CurrentValues$points.cum <- 0
-    CurrentValues$page <- "startnextgame"
-    
-  } else {
-    
-    CurrentValues$page <- "allgameend"}
-  
-})
+
 
 # Section F3: Event tracking buttons
 
