@@ -19,7 +19,7 @@
 #     E1: Box and tickets
 #     E2: Main game display
 #   F: Event (button) actions
-#     F1: Option selection buttons
+#     F1: Option selection
 #     F2: Page navigation buttons
 #     F3: Event tracking
 #   G: Save data
