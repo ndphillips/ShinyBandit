@@ -222,13 +222,8 @@ GameData <- reactiveValues(game = c(),
           # Main Display
           fixedRow(
             column(12, 
-                   plotOutput('GameDisplay'),
-                   # Buttons
-                   fixedRow(
-                     column(4, actionButton("SelectA", label = "Select Box A")),
-                     column(4, actionButton("SelectB", label = "Select Box B")),
-                     column(4, actionButton("SelectC", label = "Select Box C"))
-                   )))
+                   plotOutput('GameDisplay', click = "plot_click")),
+            column(6, h4("Click a box to select it")))
         )
       )
     }
@@ -423,6 +418,7 @@ GameData <- reactiveValues(game = c(),
          xright = box.x1.v, ytop = box.y1.v, 
          lwd = 2)
     
+    
     # Tickets
     rect(xleft = ticket.x0.v,
          ybottom = ticket.y0.v,
@@ -476,7 +472,6 @@ GameData <- reactiveValues(game = c(),
   # Section F: Event (e.g.; button) actions
   # --------------------------------
   
-  
   # Section F1: Page Navigation Buttons
   observeEvent(input$gt_instructions, {CurrentValues$page <- "instructions"})
   observeEvent(input$gt_gameend, {CurrentValues$page <- "gameend"})
@@ -500,40 +495,53 @@ GameData <- reactiveValues(game = c(),
     
   })
   
-  # Section F2: Option selection buttons
-  selection.update <- function(selection.i,
-                               trial.i,
-                               game.i) {
+# Section F2: Option selection buttons
+selection.update <- function(selection.i,
+                             trial.i,
+                             game.i) {
+  
+  if(trial.i <= trials.n) {
     
-    if(trial.i <= trials.n) {
-      
-      outcome.i <- outcomes.ls[[game.i]][trial.i, selection.i]
-      time.i <- proc.time()[3]
-      
-      # Update current values
-      CurrentValues$selection <<- selection.i
-      CurrentValues$outcome <<- outcome.i   
-      CurrentValues$points.cum <<- CurrentValues$points.cum + outcome.i
-      CurrentValues$time <<- time.i
-      CurrentValues$game <<- game.i
-      
-      
-      # Update GameData
-      GameData$game <<- c(GameData$game, game.i)
-      GameData$trial <<- c(GameData$trial, trial.i)
-      GameData$time <<- c(GameData$time, time.i)
-      GameData$selection <<- c(GameData$selection, selection.i)
-      GameData$outcome <<- c(GameData$outcome, outcome.i)
-      GameData$points.cum <<- c(GameData$points.cum, CurrentValues$points.cum)
-      
-    }
+    outcome.i <- outcomes.ls[[game.i]][trial.i, selection.i]
+    time.i <- proc.time()[3]
     
-    CurrentValues$trial <<- CurrentValues$trial + 1
+    # Update current values
+    CurrentValues$selection <<- selection.i
+    CurrentValues$outcome <<- outcome.i   
+    CurrentValues$points.cum <<- CurrentValues$points.cum + outcome.i
+    CurrentValues$time <<- time.i
+    CurrentValues$game <<- game.i
+    
+    
+    # Update GameData
+    GameData$game <<- c(GameData$game, game.i)
+    GameData$trial <<- c(GameData$trial, trial.i)
+    GameData$time <<- c(GameData$time, time.i)
+    GameData$selection <<- c(GameData$selection, selection.i)
+    GameData$outcome <<- c(GameData$outcome, outcome.i)
+    GameData$points.cum <<- c(GameData$points.cum, CurrentValues$points.cum)
+    
   }
   
-observeEvent(input$SelectA, {selection.update(1, CurrentValues$trial, CurrentValues$game)})
-observeEvent(input$SelectB, {selection.update(2, CurrentValues$trial, CurrentValues$game)})
-observeEvent(input$SelectC, {selection.update(3, CurrentValues$trial, CurrentValues$game)})
+  CurrentValues$trial <<- CurrentValues$trial + 1
+}
+
+  
+observeEvent(input$plot_click, {
+  
+ # Which option was selected?
+  
+  selection.log <- input$plot_click$x > box.x0.v & 
+                   input$plot_click$x < box.x1.v & 
+                   input$plot_click$y > 0 & 
+                   input$plot_click$y < .5
+  
+  if(any(selection.log)) {
+    
+    selection.update(which(selection.log), CurrentValues$trial, CurrentValues$game)
+  }
+  
+})  
 
 
 
@@ -563,6 +571,8 @@ observeEvent(CurrentValues$trial, {
   }
   
 })
+
+
 
 # --------------------------------
 # Section G: Save data
