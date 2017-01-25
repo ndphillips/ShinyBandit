@@ -62,7 +62,7 @@ if(saveDataLocation == "dropbox") {
   droptoken <- readRDS("droptoken.rds")        # Reads in authentication for dropbox
   
 }
-if(saveDataLocation == "email") {  # not working yet!
+if(saveDataLocation == "email") {  # not working yet!!!!!
   
   # See https://goo.gl/kQLrTk for guide
   
